@@ -4,22 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>قائمة الربح والخسارة - فوندانت شوكو</title>
-    <!-- أيقونة الموقع (الشعار) -->
+    <!-- أيقونة الموقع والشعار -->
     <link rel="icon" href="https://i.postimg.cc/WbJw6TdV/Orig-LOGO-Square.jpg" type="image/jpeg">
+    
+    <!-- مكتبات تصدير الـ PDF الاحترافي -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <style>
         :root {
-            --primary-color: #5c3a21; /* لون شوكولاتة فخام للإدارة العليا */
-            --accent-color: #d97706;
-            --bg-color: #fdfbf7;
+            --primary-dark: #3b2212;
+            --primary-main: #5c3a21;
+            --accent-gold: #d97706;
+            --bg-gradient: linear-gradient(135deg, #fdfbf7 0%, #f4ebd0 100%);
             --card-bg: #ffffff;
-            --text-color: #2d2d2d;
+            --text-main: #2d2d2d;
             --border-color: #e5e7eb;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background: var(--bg-gradient);
+            color: var(--text-main);
             margin: 0;
             padding: 20px;
             direction: rtl;
@@ -30,16 +36,31 @@
             margin: 0 auto;
             background: var(--card-bg);
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(92, 58, 33, 0.1);
+            border: 1px solid #ebd5c1;
         }
 
-        /* الهيدر والشعار */
+        /* الهيدر الفاخر */
         .header {
-            text-align: center;
-            border-bottom: 3px solid var(--primary-color);
-            padding-bottom: 20px;
-            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid var(--accent-gold);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .header-info h1 {
+            margin: 0 0 5px 0;
+            font-size: 1.6rem;
+            color: var(--primary-dark);
+        }
+
+        .header-info p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 0.95rem;
         }
 
         .header img {
@@ -47,38 +68,49 @@
             height: 70px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--primary-color);
-            margin-bottom: 10px;
+            border: 3px solid var(--accent-gold);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
-        .header h1 {
-            margin: 5px 0;
-            font-size: 1.6rem;
-            color: var(--primary-color);
+        .period-box {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: #fff8f0;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #fde68a;
         }
 
-        .header p {
-            margin: 0;
-            color: #666;
+        .period-box label {
+            font-weight: bold;
+            color: var(--primary-main);
+        }
+
+        .period-box input {
+            padding: 6px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
             font-size: 0.95rem;
+            background: #fff;
         }
 
-        /* تنسيق الأقسام والجداول */
+        /* عناوين الأقسام */
         .section-title {
-            background-color: #f3f4f6;
-            color: var(--primary-color);
-            padding: 8px 12px;
+            background: linear-gradient(90deg, var(--primary-main), #855431);
+            color: white;
+            padding: 8px 15px;
             font-size: 1.1rem;
             font-weight: bold;
-            border-right: 4px solid var(--primary-color);
-            margin-top: 25px;
+            margin-top: 20px;
             margin-bottom: 15px;
-            border-radius: 4px 0 0 4px;
+            border-radius: 6px;
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
         }
 
@@ -97,7 +129,7 @@
             font-size: 0.9rem;
             font-weight: 600;
             margin-bottom: 5px;
-            color: #4b5563;
+            color: #374151;
         }
 
         .form-group input {
@@ -107,114 +139,27 @@
             font-size: 1rem;
             text-align: left;
             direction: ltr;
+            background-color: #fafaf9;
+            transition: all 0.2s ease;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+            background-color: #fff;
         }
 
-        /* قسم النتائج الكلية */
-        .summary-card {
-            background: #fdf8f0;
-            border: 1px solid #fde68a;
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin-top: 25px;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            font-size: 1.05rem;
-            border-bottom: 1px dashed #e5e7eb;
-        }
-
-        .summary-row:last-child {
-            border-bottom: none;
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-top: 5px;
-            padding-top: 12px;
-            border-top: 2px solid var(--primary-color);
-        }
-
-        /* الأزرار */
-        .actions {
-            margin-top: 30px;
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #432a18;
-        }
-
-        .btn-secondary {
-            background-color: #4b5563;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background-color: #374151;
-        }
-
-        .btn-success {
-            background-color: #059669;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background-color: #047857;
-        }
-
-        /* زر إضافة مصروف جديد */
-        .add-row-btn {
-            background: transparent;
-            border: 1px dashed var(--accent-color);
-            color: var(--accent-color);
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
-
-        .add-row-btn:hover {
-            background: rgba(217, 119, 6, 0.05);
-        }
-
-        .remove-btn {
-            background: #fee2e2;
-            color: #dc2626;
-            border: none;
-            border-radius: 4px;
-            padding: 0 10px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
+        /* المصاريف الديناميكية */
         .expense-item {
             display: flex;
             gap: 10px;
@@ -224,20 +169,123 @@
 
         .expense-item input[type="text"] {
             flex: 2;
-            padding: 8px;
+            padding: 8px 12px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             direction: rtl;
+            font-size: 0.95rem;
+            background: #fafaf9;
         }
 
         .expense-item input[type="number"] {
             flex: 1;
-            padding: 8px;
+            padding: 8px 12px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             direction: ltr;
             text-align: left;
+            font-size: 0.95rem;
+            background: #fafaf9;
         }
+
+        .remove-btn {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #f87171;
+            border-radius: 6px;
+            padding: 0 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .remove-btn:hover {
+            background: #dc2626;
+            color: white;
+        }
+
+        .add-row-btn {
+            background: transparent;
+            border: 2px dashed var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 8px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .add-row-btn:hover {
+            background: rgba(217, 119, 6, 0.08);
+        }
+
+        /* بطاقة النتائج الكلية */
+        .summary-card {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 2px solid #fcd34d;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            box-shadow: 0 4px 15px rgba(217, 119, 6, 0.08);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 1.05rem;
+            border-bottom: 1px dashed #f59e0b;
+            color: #1f2937;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-top: 8px;
+            padding-top: 12px;
+            border-top: 3px solid var(--primary-dark);
+        }
+
+        /* الأزرار بالأسفل */
+        .actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        }
+
+        .btn-primary { background-color: var(--primary-main); color: white; }
+        .btn-primary:hover { background-color: #432a18; }
+        
+        .btn-secondary { background-color: #4b5563; color: white; }
+        .btn-secondary:hover { background-color: #374151; }
+
+        .btn-warning { background-color: #d97706; color: white; }
+        .btn-warning:hover { background-color: #b45309; }
+
+        .btn-info { background-color: #0284c7; color: white; }
+        .btn-info:hover { background-color: #0369a1; }
+
+        .btn-pdf { background-color: #b91c1c; color: white; }
+        .btn-pdf:hover { background-color: #991b1b; }
 
         /* توقيع المطور المتطاير */
         .signature-card {
@@ -246,8 +294,8 @@
             left: 20px;
             background: #ffffff;
             color: #2196F3;
-            padding: 8px 13px;
-            border-radius: 6px;
+            padding: 8px 14px;
+            border-radius: 8px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.15);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 0.6rem;
@@ -261,9 +309,7 @@
             display: inline-block;
         }
 
-        .signature-card:hover { 
-            transform: scale(1.05); 
-        }
+        .signature-card:hover { transform: scale(1.05); }
 
         @keyframes float { 
             0% { transform: translateY(0px); } 
@@ -271,71 +317,63 @@
             100% { transform: translateY(0px); } 
         }
 
-        .signature-card .name { 
-            font-size: 0.7rem; 
-            font-weight: 700; 
-            margin-bottom: 2px; 
-            color: #2196F3;
-        }
+        .signature-card .name { font-size: 0.75rem; font-weight: 700; color: #2196F3; margin-bottom: 2px; }
+        .signature-card .title { font-size: 0.55rem; color: #2196F3; opacity: 0.9; }
 
-        .signature-card .title { 
-            font-size: 0.55rem; 
-            opacity: 0.9; 
-            color: #2196F3;
-        }
-
+        /* تخصيص الطباعة والـ PDF لتكون صفحة واحدة نظيفة بدون أزرار أو علامات حذف */
         @media print {
-            .signature-card, .actions, .add-row-btn, .remove-btn {
-                display: none !important;
-            }
-            body {
-                background: white;
-                padding: 0;
-            }
-            .container {
-                box-shadow: none;
-                padding: 0;
-                width: 100%;
-            }
+            .signature-card, .actions, .add-row-btn, .remove-btn { display: none !important; }
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; border: none; padding: 10px; width: 100%; max-width: 100%; }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="report-content">
     <!-- الهيدر -->
     <div class="header">
-        <img src="https://i.postimg.cc/WbJw6TdV/Orig-LOGO-Square.jpg" alt="Fondant Choco Logo">
-        <h1>شركة فوندانت شوكو - Fondant Choco</h1>
-        <p>قائمة الربح والخسارة التشغيلية</p>
+        <div class="header-info">
+            <h1>شركة فوندانت شوكو - Fondant Choco</h1>
+            <p>قائمة الربح والخسارة التشغيلية (تقرير الإدارة العليا)</p>
+        </div>
+        <div>
+            <img src="https://i.postimg.cc/WbJw6TdV/Orig-LOGO-Square.jpg" alt="Fondant Choco Logo">
+        </div>
     </div>
 
-    <!-- 1. قسم المبيعات -->
+    <!-- حقل الفترة الزمنية -->
+    <div class="period-box">
+        <label for="report-period">فترة التقرير:</label>
+        <input type="text" id="report-period" placeholder="مثال: عن شهر يناير 2026" style="flex:1;">
+    </div>
+
+    <!-- 1. المبيعات -->
     <div class="section-title">أولاً: الإيرادات والمبيعات</div>
     <div class="form-grid">
         <div class="form-group">
             <label>مبيعات المستشفيات</label>
-            <input type="number" id="sales_hospitals" value="0" step="0.001" oninput="calculateTotals()">
+            <input type="number" id="sales_hospitals" placeholder="" step="0.001" oninput="calculateTotals()" onblur="formatField(this)">
         </div>
         <div class="form-group">
             <label>مبيعات خارجية</label>
-            <input type="number" id="sales_external" value="0" step="0.001" oninput="calculateTotals()">
+            <input type="number" id="sales_external" placeholder="" step="0.001" oninput="calculateTotals()" onblur="formatField(this)">
         </div>
         <div class="form-group">
             <label>مبيعات نقدية</label>
-            <input type="number" id="sales_cash" value="0" step="0.001" oninput="calculateTotals()">
+            <input type="number" id="sales_cash" placeholder="" step="0.001" oninput="calculateTotals()" onblur="formatField(this)">
         </div>
         <div class="form-group">
             <label>مبيعات طلبات</label>
-            <input type="number" id="sales_orders" value="0" step="0.001" oninput="calculateTotals()">
+            <input type="number" id="sales_orders" placeholder="" step="0.001" oninput="calculateTotals()" onblur="formatField(this)">
         </div>
         <div class="form-group">
             <label>مبيعات كيتا</label>
-            <input type="number" id="sales_keeta" value="0" step="0.001" oninput="calculateTotals()">
+            <input type="number" id="sales_keeta" placeholder="" step="0.001" oninput="calculateTotals()" onblur="formatField(this)">
         </div>
         <div class="form-group">
             <label>مبيعات شركة لوسي</label>
-            <input type="number" id="sales_lucy" value="0" step="0.001" oninput="calculateTotals()">
+            <input type="number" id="sales_lucy" placeholder="" step="0.001" oninput="calculateTotals()" onblur="formatField(this)">
         </div>
     </div>
 
@@ -344,18 +382,16 @@
     <div class="form-grid">
         <div class="form-group">
             <label>تكلفة المواد</label>
-            <input type="number" id="cost_materials" value="0" step="0.001" oninput="calculateTotals()">
+            <input type="number" id="cost_materials" placeholder="" step="0.001" oninput="calculateTotals()" onblur="formatField(this)">
         </div>
     </div>
 
     <!-- 3. المصاريف -->
     <div class="section-title">ثالثاً: المصاريف التشغيلية والإدارية</div>
-    <div id="expenses-container">
-        <!-- يتم تعبئة المصاريف الأساسية تلقائياً بناءً على طلبك -->
-    </div>
-    <button type="button" class="add-row-btn" onclick="addExpenseRow('', 0)">+ إضافة مصروف آخر</button>
+    <div id="expenses-container"></div>
+    <button type="button" class="add-row-btn" onclick="addExpenseRow('', '')">+ إضافة مصروف آخر</button>
 
-    <!-- الخلاصة والنتائج -->
+    <!-- النتائج النهائية -->
     <div class="summary-card">
         <div class="summary-row">
             <span>إجمالي المبيعات:</span>
@@ -365,7 +401,7 @@
             <span>تكلفة المواد:</span>
             <span id="lbl_total_cost">0.000</span>
         </div>
-        <div class="summary-row" style="color: #059669; font-weight: bold;">
+        <div class="summary-row" style="color: #047857;">
             <span>مجمل الربح:</span>
             <span id="lbl_gross_profit">0.000</span>
         </div>
@@ -379,10 +415,14 @@
         </div>
     </div>
 
-    <!-- أزرار التحكم والطباعة -->
+    <!-- أزرار التحكم -->
     <div class="actions">
-        <button class="btn btn-secondary" onclick="resetForm()">إعادة صفير</button>
-        <button class="btn btn-primary" onclick="window.print()">طباعة التقرير للإدارة العليا</button>
+        <button class="btn btn-warning" onclick="exportBackup()">أخذ نسخة احتياطية</button>
+        <button class="btn btn-info" onclick="document.getElementById('importFile').click()">استعادة من ملف</button>
+        <input type="file" id="importFile" style="display: none;" accept=".json" onchange="importBackup(event)">
+        <button class="btn btn-secondary" onclick="resetForm()">تصفير الحقول</button>
+        <button class="btn btn-pdf" onclick="exportToPDF()">تصدير PDF احترافي</button>
+        <button class="btn btn-primary" onclick="window.print()">طباعة مباشرة</button>
     </div>
 </div>
 
@@ -393,20 +433,21 @@
 </a>
 
 <script>
-    // قائمة المصاريف الأساسية المستخرجة من صورتك المرفقة[cite: 1]
     const defaultExpenses = [
         "رواتب", "ايجارات", "اقامات", "اشتراكات", "تجارب", 
         "صيانة", "تغليف", "نظافة", "قرطاسية", "رسوم", 
         "هواتف", "ايجار سيارة", "ضيافة", "غاز", "بنزين"
     ];
 
-    // تهيئة الصفحة بإدراج المصاريف الأساسية
     window.onload = function() {
         const container = document.getElementById('expenses-container');
         defaultExpenses.forEach(name => {
-            addExpenseRow(name, 0);
+            addExpenseRow(name, '');
         });
         calculateTotals();
+        
+        // تفعيل التنقل بالـ Enter أو الأسهم بين الحقول
+        setupKeyboardNavigation();
     };
 
     function addExpenseRow(name, amount) {
@@ -414,15 +455,23 @@
         const div = document.createElement('div');
         div.className = 'expense-item';
         div.innerHTML = `
-            <input type="text" placeholder="اسم المصروف" value="${name}" oninput="calculateTotals()">
-            <input type="number" placeholder="المبلغ" value="${amount}" step="0.001" oninput="calculateTotals()">
-            <button type="button" class="remove-btn" onclick="this.parentElement.remove(); calculateTotals();">×</button>
+            <input type="text" placeholder="اسم المصروف" value="${name}">
+            <input type="number" placeholder="" value="${amount !== '' ? parseFloat(amount).toFixed(3) : ''}" step="0.001" oninput="calculateTotals()" onblur="formatField(this)">
+            <button type="button" class="remove-btn" onclick="this.parentElement.remove(); calculateTotals(); setupKeyboardNavigation();">×</button>
         `;
         container.appendChild(div);
+        setupKeyboardNavigation();
+    }
+
+    function formatField(input) {
+        if (input.value.trim() === '') return;
+        const val = parseFloat(input.value);
+        if (!isNaN(val)) {
+            input.value = val.toFixed(3);
+        }
     }
 
     function calculateTotals() {
-        // حساب المبيعات
         const h = parseFloat(document.getElementById('sales_hospitals').value) || 0;
         const ext = parseFloat(document.getElementById('sales_external').value) || 0;
         const cash = parseFloat(document.getElementById('sales_cash').value) || 0;
@@ -431,14 +480,9 @@
         const lucy = parseFloat(document.getElementById('sales_lucy').value) || 0;
 
         const totalSales = h + ext + cash + orders + keeta + lucy;
-
-        // تكلفة المواد
         const costMaterials = parseFloat(document.getElementById('cost_materials').value) || 0;
-
-        // مجمل الربح
         const grossProfit = totalSales - costMaterials;
 
-        // حساب إجمالي المصاريف
         let totalExpenses = 0;
         const expenseItems = document.querySelectorAll('#expenses-container .expense-item');
         expenseItems.forEach(item => {
@@ -447,10 +491,8 @@
             totalExpenses += val;
         });
 
-        // صافي الربح
         const netProfit = grossProfit - totalExpenses;
 
-        // تحديث العرض (تنسيق الأرقام بثلاث خانات عشرية بدقة)
         document.getElementById('lbl_total_sales').innerText = totalSales.toFixed(3);
         document.getElementById('lbl_total_cost').innerText = costMaterials.toFixed(3);
         document.getElementById('lbl_gross_profit').innerText = grossProfit.toFixed(3);
@@ -458,14 +500,146 @@
         
         const netProfitEl = document.getElementById('lbl_net_profit');
         netProfitEl.innerText = netProfit.toFixed(3);
-        netProfitEl.style.color = netProfit >= 0 ? '#059669' : '#dc2626';
+        netProfitEl.style.color = netProfit >= 0 ? '#047857' : '#dc2626';
+    }
+
+    function setupKeyboardNavigation() {
+        const inputs = Array.from(document.querySelectorAll('input[type="text"], input[type="number"]'));
+        inputs.forEach((input, index) => {
+            input.onkeydown = function(e) {
+                if (e.key === 'Enter' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    if (inputs[index + 1]) inputs[index + 1].focus();
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    if (inputs[index - 1]) inputs[index - 1].focus();
+                }
+            };
+        });
     }
 
     function resetForm() {
-        if(confirm('هل أنت متأكد من صفير كافة الحقول؟')) {
-            document.querySelectorAll('input[type="number"]').forEach(input => input.value = '0');
+        if(confirm('هل أنت متأكد من تصفير كافة الحقول؟')) {
+            document.querySelectorAll('input[type="number"]').forEach(input => input.value = '');
+            document.getElementById('report-period').value = '';
             calculateTotals();
         }
+    }
+
+    // تصدير PDF احترافي على صفحة واحدة وبدون إظهار أزرار الحذف
+    async function exportToPDF() {
+        const { jsPDF } = window.jspdf;
+        const element = document.getElementById('report-content');
+        
+        // إخفاء الأزرار وعلامات الحذف مؤقتاً أثناء التصدير لضمان مظهر نظيف
+        const actionsDiv = document.querySelector('.actions');
+        const signatureCard = document.querySelector('.signature-card');
+        const removeBtns = document.querySelectorAll('.remove-btn');
+        const addBtn = document.querySelector('.add-row-btn');
+
+        actionsDiv.style.display = 'none';
+        signatureCard.style.display = 'none';
+        addBtn.style.display = 'none';
+        removeBtns.forEach(btn => btn.style.display = 'none');
+
+        try {
+            const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            
+            const imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+            // ضبط التصغير ليناسب صفحة واحدة تماماً
+            let heightRatio = pageHeight / imgHeight;
+            let finalHeight = pageHeight;
+            let finalWidth = pageWidth;
+
+            if (imgHeight > pageHeight) {
+                finalWidth = pageWidth * heightRatio;
+                finalHeight = pageHeight;
+            }
+
+            pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, imgHeight > pageHeight ? pageHeight : imgHeight);
+            pdf.save('Fondant_Choco_PL_Report.pdf');
+        } catch (error) {
+            alert('حدث خطأ أثناء تصدير الـ PDF.');
+        } finally {
+            actionsDiv.style.display = 'flex';
+            signatureCard.style.display = 'inline-block';
+            addBtn.style.display = 'inline-block';
+            removeBtns.forEach(btn => btn.style.display = 'inline-block');
+        }
+    }
+
+    // النسخ الاحتياطي والاستعادة
+    function exportBackup() {
+        const data = {
+            period: document.getElementById('report-period').value,
+            sales: {
+                hospitals: document.getElementById('sales_hospitals').value,
+                external: document.getElementById('sales_external').value,
+                cash: document.getElementById('sales_cash').value,
+                orders: document.getElementById('sales_orders').value,
+                keeta: document.getElementById('sales_keeta').value,
+                lucy: document.getElementById('sales_lucy').value
+            },
+            costMaterials: document.getElementById('cost_materials').value,
+            expenses: []
+        };
+
+        document.querySelectorAll('#expenses-container .expense-item').forEach(item => {
+            const inputs = item.querySelectorAll('input');
+            data.expenses.push({ name: inputs[0].value, amount: inputs[1].value });
+        });
+
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "fondant_choco_backup_" + new Date().toISOString().slice(0,10) + ".json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+    }
+
+    function importBackup(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                document.getElementById('report-period').value = data.period || '';
+                
+                const s = data.sales || {};
+                document.getElementById('sales_hospitals').value = s.hospitals || '';
+                document.getElementById('sales_external').value = s.external || '';
+                document.getElementById('sales_cash').value = s.cash || '';
+                document.getElementById('sales_orders').value = s.orders || '';
+                document.getElementById('sales_keeta').value = s.keeta || '';
+                document.getElementById('sales_lucy').value = s.lucy || '';
+                
+                document.getElementById('cost_materials').value = data.costMaterials || '';
+
+                const container = document.getElementById('expenses-container');
+                container.innerHTML = '';
+                if (data.expenses && Array.isArray(data.expenses)) {
+                    data.expenses.forEach(exp => {
+                        addExpenseRow(exp.name, exp.amount);
+                    });
+                }
+
+                calculateTotals();
+                alert('تمت استعادة البيانات بنجاح!');
+            } catch (err) {
+                alert('خطأ في قراءة ملف النسخة الاحتياطية.');
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
     }
 </script>
 
